@@ -1,8 +1,11 @@
 <?php
 
+
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -16,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     // Relation utilisateur 1 - 0...* véhicule. Un utilisateur possède zéro à plusieurs véhicules.
     public function vehicules(): HasMany
