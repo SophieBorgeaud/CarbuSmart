@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'strapi' => [
+        'url' => env('STRAPI_URL'),
+        'token' => env('STRAPI_TOKEN'),
+    ],
 ];
