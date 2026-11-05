@@ -3,6 +3,7 @@
 use App\Http\Controllers\TypeCarburantController;
 use App\Http\Controllers\VehiculeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StationController;
 use Illuminate\Support\Facades\Route;
 
 // Retourne la liste de tous les types de carburants.
@@ -37,4 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Supprime logiquement un véhicule de l'utilisateur connecté.
     Route::delete('/vehicules/{id}', [VehiculeController::class, 'destroy']);
+  
+  
+    Route::get('/stations/distances', [StationController::class, 'getWithDistances']);
 });
