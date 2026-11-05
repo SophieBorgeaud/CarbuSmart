@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\TypeCarburantController;
 use App\Http\Controllers\VehiculeController;
+use App\Http\Controllers\StationController;
 use Illuminate\Support\Facades\Route;
 
 // Retourne la liste de tous les types de carburants.
@@ -16,5 +17,4 @@ Route::get('/vehicules', [VehiculeController::class, 'index']);
 // Retourne un véhicule selon son identifiant avec son type de carburant.
 Route::get('/vehicules/{id}', [VehiculeController::class, 'show']);
 
-
-
+Route::get('/stations/distances', [StationController::class, 'getWithDistances']);
