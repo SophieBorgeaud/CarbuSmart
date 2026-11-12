@@ -1,0 +1,220 @@
+/* Couleurs principales de CarbuSmart */
+:root {
+    --bleu-gris: #2F4454;
+    --bordeaux: #2E151B;
+    --rose: #DA7B93;
+    --vert: #376E6F;
+    --vert-fonce: #1C3334;
+    --blanc: #FFFFFF;
+    --fond-clair: #F4F7F6;
+}
+
+/* Tous les éléments conservent leur largeur malgré les paddings */
+* {
+    box-sizing: border-box;
+}
+
+/* Structure générale de la page */
+body {
+    min-height: 100vh;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--vert-fonce);
+    background-color: var(--fond-clair);
+}
+
+/* En-tête */
+.site-header {
+    padding: 1rem;
+    color: var(--blanc);
+    background-color: var(--vert-fonce);
+}
+
+.header-content {
+    max-width: 1100px;
+    margin: auto;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.site-title {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+/* Navigation */
+.nav-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+
+    color: var(--blanc);
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    background-color: var(--vert);
+}
+
+/* Contenu principal */
+.main-content {
+    width: 100%;
+    padding: 2rem 1rem;
+
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Carte contenant un formulaire */
+.auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: 1.5rem;
+
+    background-color: var(--blanc);
+    border-top: 5px solid var(--rose);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(28, 51, 52, 0.15);
+}
+
+.auth-title {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+
+    color: var(--bleu-gris);
+    text-align: center;
+}
+
+.auth-intro {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Formulaire */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+
+    font: inherit;
+    border: 1px solid var(--bleu-gris);
+    border-radius: 5px;
+}
+
+.form-input:focus {
+    outline: 2px solid var(--rose);
+    border-color: var(--rose);
+}
+
+/* Bouton principal */
+.primary-button {
+    padding: 0.8rem;
+
+    font: inherit;
+    font-weight: bold;
+    color: var(--blanc);
+
+    background-color: var(--vert);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.primary-button:hover,
+.primary-button:focus {
+    background-color: var(--bleu-gris);
+}
+
+/* Lien sous le formulaire */
+.auth-link {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.auth-link a {
+    color: var(--vert);
+    font-weight: bold;
+}
+
+.auth-link a:hover,
+.auth-link a:focus {
+    color: var(--bordeaux);
+}
+
+/* Pied de page */
+.site-footer {
+    padding: 1rem;
+
+    color: var(--blanc);
+    text-align: center;
+    background-color: var(--bordeaux);
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+/* Affichage sur tablette et ordinateur */
+@media screen and (min-width: 768px) {
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .site-title {
+        font-size: 2rem;
+    }
+
+    .main-content {
+        padding: 3rem 2rem;
+    }
+
+    .auth-card {
+        padding: 2rem;
+    }
+}
+
+/* Message affiché lorsqu'un champ du formulaire est incorrect */
+.form-error {
+    margin: 0;
+    color: var(--bordeaux);
+    font-size: 0.9rem;
+}
