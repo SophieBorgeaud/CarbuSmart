@@ -44,6 +44,11 @@
                 {{-- Bouton affiché uniquement à l'utilisateur connecté. --}}
                 @auth
                     <li>
+                        <a class="nav-link" href="{{ route('compte.index') }}">
+                            Mon compte
+                        </a>
+                    </li>
+                    <li>
                         <form
                             class="logout-form"
                             action="{{ route('logout') }}"
