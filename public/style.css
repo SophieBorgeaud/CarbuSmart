@@ -230,3 +230,201 @@ body {
     color: var(--bordeaux);
     font-size: 0.9rem;
 }
+
+/* Espace personnel */
+.account-section {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.account-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.account-header h2 {
+    margin-bottom: 0.5rem;
+    color: var(--bleu-gris);
+}
+
+/* Liste des véhicules */
+.vehicle-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.vehicle-card {
+    padding: 1.25rem;
+    background-color: var(--blanc);
+    border-top: 5px solid var(--rose);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(28, 51, 52, 0.15);
+}
+
+.vehicle-card-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vehicle-card h4 {
+    margin: 0;
+    color: var(--bleu-gris);
+    font-size: 1.2rem;
+}
+
+.vehicle-badge {
+    padding: 0.3rem 0.5rem;
+    color: var(--blanc);
+    background-color: var(--vert);
+    border-radius: 5px;
+    font-size: 0.8rem;
+}
+
+@media screen and (min-width: 768px) {
+    .vehicle-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.vehicle-form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--blanc);
+    border-radius: 8px;
+}
+
+.vehicle-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media screen and (min-width: 768px) {
+    .vehicle-form {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .checkbox-group,
+    .vehicle-form .primary-button {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Bouton permettant d'ouvrir le formulaire d'ajout */
+.vehicle-add {
+    margin-top: 2rem;
+}
+
+.vehicle-add-summary {
+    padding: 0.8rem;
+    color: var(--blanc);
+    font-weight: bold;
+    text-align: center;
+    background-color: var(--vert);
+    border-radius: 5px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.vehicle-add-summary:hover,
+.vehicle-add-summary:focus {
+    background-color: var(--bleu-gris);
+}
+
+.vehicle-add-summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Formulaire affiché après l'ouverture du bouton */
+.vehicle-add .vehicle-form-section {
+    margin-top: 1rem;
+}
+
+/* Mise en évidence du véhicule par défaut */
+.vehicle-card-default {
+    background-color: #F2F8F7;
+    border: 2px solid var(--vert);
+    border-top: 5px solid var(--vert);
+    box-shadow: 0 4px 14px rgba(55, 110, 111, 0.3);
+}
+
+/* Modification d'un véhicule */
+.vehicle-edit {
+    margin-top: 1rem;
+}
+
+/* Cache le bouton Modifier lorsque le formulaire est ouvert */
+.vehicle-edit[open] > .secondary-button {
+    display: none;
+}
+
+.secondary-button {
+    display: block;
+    padding: 0.7rem;
+    color: var(--blanc);
+    font-weight: bold;
+    text-align: center;
+    background-color: var(--bleu-gris);
+    border-radius: 5px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.secondary-button::-webkit-details-marker {
+    display: none;
+}
+
+.vehicle-edit-form {
+    margin-top: 1rem;
+    display: grid;
+    gap: 1rem;
+}
+
+/* Suppression logique d'un véhicule */
+.vehicle-delete-form {
+    margin-top: 0.75rem;
+}
+
+.danger-button {
+    width: 100%;
+    padding: 0.7rem;
+    color: var(--blanc);
+    font: inherit;
+    font-weight: bold;
+    background-color: var(--bordeaux);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.danger-button:hover,
+.danger-button:focus {
+    background-color: var(--rose);
+}
+
+/* Annulation de la modification d'un véhicule */
+.cancel-button {
+    width: 100%;
+    padding: 0.7rem;
+    color: var(--bleu-gris);
+    font: inherit;
+    font-weight: bold;
+    background-color: var(--blanc);
+    border: 1px solid var(--bleu-gris);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-button:hover,
+.cancel-button:focus {
+    color: var(--blanc);
+    background-color: var(--bleu-gris);
+}

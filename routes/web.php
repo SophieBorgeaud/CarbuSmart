@@ -3,6 +3,7 @@
 use App\Services\StrapiStationService;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WebAuthController;
+use App\Http\Controllers\CompteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,3 +50,23 @@ Route::post('/register', [WebAuthController::class, 'register'])
 Route::post('/logout', [WebAuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
+// Affiche l'espace personnel de l'utilisateur connecté.
+Route::get('/mon-compte', [CompteController::class, 'index'])
+    ->middleware('auth')
+    ->name('compte.index');
+
+// Enregistre un nouveau véhicule pour l'utilisateur connecté.
+Route::post('/mon-compte/vehicules', [CompteController::class, 'storeVehicule'])
+    ->middleware('auth')
+    ->name('compte.vehicules.store');
+
+// Modifie un véhicule appartenant à l'utilisateur connecté.
+Route::put('/mon-compte/vehicules/{id}', [CompteController::class, 'updateVehicule'])
+    ->middleware('auth')
+    ->name('compte.vehicules.update');
+
+// Désactive un véhicule appartenant à l'utilisateur connecté.
+Route::delete('/mon-compte/vehicules/{id}', [CompteController::class, 'destroyVehicule'])
+    ->middleware('auth')
+    ->name('compte.vehicules.destroy');
