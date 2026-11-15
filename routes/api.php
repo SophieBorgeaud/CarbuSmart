@@ -40,5 +40,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/vehicules/{id}', [VehiculeController::class, 'destroy']);
   
   
-    Route::get('/stations/distances', [StationController::class, 'getWithDistances']);
+    Route::get('/stations/recommandation', [StationController::class, 'getBestStations']);
 });
