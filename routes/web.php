@@ -70,3 +70,13 @@ Route::put('/mon-compte/vehicules/{id}', [CompteController::class, 'updateVehicu
 Route::delete('/mon-compte/vehicules/{id}', [CompteController::class, 'destroyVehicule'])
     ->middleware('auth')
     ->name('compte.vehicules.destroy');
+
+// Modifie les informations personnelles de l'utilisateur connecté.
+Route::put('/mon-compte/profil', [CompteController::class, 'updateProfil'])
+    ->middleware('auth')
+    ->name('compte.profil.update');
+
+// Modifie le mot de passe de l'utilisateur connecté.
+Route::put('/mon-compte/mot-de-passe', [CompteController::class, 'updateMotDePasse'])
+    ->middleware('auth')
+    ->name('compte.mot-de-passe.update');
