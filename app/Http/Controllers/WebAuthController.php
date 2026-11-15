@@ -90,4 +90,24 @@ class WebAuthController extends Controller
             ->route('map')
             ->with('success', 'Vous êtes maintenant connecté.');
     }
+
+        /**
+         * Déconnecte l'utilisateur et supprime sa session.
+         */
+        public function logout(Request $request)
+    {
+        // Déconnecte l'utilisateur.
+        Auth::logout();
+
+        // Supprime les données de son ancienne session.
+        $request->session()->invalidate();
+
+        // Crée un nouveau jeton de sécurité CSRF.
+        $request->session()->regenerateToken();
+
+        // Redirige vers la carte.
+        return redirect()
+            ->route('map')
+            ->with('success', 'Vous êtes maintenant déconnecté.');
+    }
 }

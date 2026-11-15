@@ -19,23 +19,45 @@
 
         <nav class="main-nav" aria-label="Navigation principale">
             <ul class="nav-list">
+
                 <li>
                     <a class="nav-link" href="{{ route('map') }}">
                         Carte des stations
                     </a>
                 </li>
 
-                <li>
-                    <a class="nav-link" href="{{ route('login') }}">
-                        Connexion
-                    </a>
-                </li>
+                {{-- Liens affichés uniquement aux visiteurs non connectés. --}}
+                @guest
+                    <li>
+                        <a class="nav-link" href="{{ route('login') }}">
+                            Connexion
+                        </a>
+                    </li>
 
-                <li>
-                    <a class="nav-link" href="{{ route('register') }}">
-                        Créer un compte
-                    </a>
-                </li>
+                    <li>
+                        <a class="nav-link" href="{{ route('register') }}">
+                            Créer un compte
+                        </a>
+                    </li>
+                @endguest
+
+                {{-- Bouton affiché uniquement à l'utilisateur connecté. --}}
+                @auth
+                    <li>
+                        <form
+                            class="logout-form"
+                            action="{{ route('logout') }}"
+                            method="POST"
+                        >
+                            @csrf
+
+                            <button class="nav-link nav-button" type="submit">
+                                Déconnexion
+                            </button>
+                        </form>
+                    </li>
+                @endauth
+
             </ul>
         </nav>
 

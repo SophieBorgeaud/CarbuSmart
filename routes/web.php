@@ -44,3 +44,8 @@ Route::get('/register', function () {
 Route::post('/register', [WebAuthController::class, 'register'])
     // Donne le nom 'register.submit' à cette route.
     ->name('register.submit');
+
+// Déconnecte l'utilisateur authentifié.
+Route::post('/logout', [WebAuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');

@@ -75,6 +75,18 @@ body {
     background-color: var(--vert);
 }
 
+/* Formulaire du bouton de déconnexion dans la navigation */
+.logout-form {
+    margin: 0;
+}
+
+.nav-button {
+    font: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 /* Contenu principal */
 .main-content {
     width: 100%;
