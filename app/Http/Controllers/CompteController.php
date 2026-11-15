@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\TypeCarburant;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class CompteController extends Controller
 {
@@ -24,6 +26,67 @@ class CompteController extends Controller
             'vehicules' => $vehicules,
             'typesCarburants' => $typesCarburants,
         ]);
+    }
+
+    /**
+     * Modifie le nom et l'adresse e-mail de l'utilisateur connecté.
+     */
+    public function updateProfil(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate(
+            [
+                'nom' => 'required|string|max:255',
+                'email' => [
+                    'required',
+                    'email',
+                    'max:255',
+                    Rule::unique('users', 'email')->ignore($user->id),
+                ],
+            ],
+            [
+                'nom.required' => 'Le nom est obligatoire.',
+                'nom.max' => 'Le nom ne peut pas dépasser 255 caractères.',
+                'email.required' => 'L’adresse e-mail est obligatoire.',
+                'email.email' => 'L’adresse e-mail n’est pas valide.',
+                'email.unique' => 'Cette adresse e-mail est déjà utilisée.',
+            ]
+        );
+
+        $user->update($validated);
+
+        return redirect()
+            ->route('compte.index')
+            ->with('success', 'Vos informations personnelles ont été modifiées.');
+    }
+
+    /**
+     * Modifie le mot de passe de l'utilisateur connecté.
+     */
+    public function updateMotDePasse(Request $request)
+    {
+        $validated = $request->validate(
+            [
+                'current_password' => 'required|current_password',
+                'password' => 'required|string|min:8|confirmed',
+            ],
+            [
+                'current_password.required' => 'Le mot de passe actuel est obligatoire.',
+                'current_password.current_password' => 'Le mot de passe actuel est incorrect.',
+                'password.required' => 'Le nouveau mot de passe est obligatoire.',
+                'password.min' => 'Le nouveau mot de passe doit contenir au moins 8 caractères.',
+                'password.confirmed' => 'Les deux nouveaux mots de passe ne correspondent pas.',
+            ]
+        );
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()
+            ->route('compte.index')
+            ->with('success', 'Votre mot de passe a été modifié.');
     }
 
     /**

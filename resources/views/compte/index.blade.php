@@ -12,6 +12,153 @@
             </p>
         </header>
 
+        @if(session('success'))
+            <p class="success-message">
+                {{ session('success') }}
+            </p>
+        @endif
+
+        <section class="account-settings">
+
+            <details
+                class="account-details"
+                @if($errors->has('nom') || $errors->has('email')) open @endif
+            >
+                <summary class="account-summary">
+                    Modifier mes informations personnelles
+                </summary>
+
+                <form
+                    class="account-form"
+                    action="{{ route('compte.profil.update') }}"
+                    method="POST"
+                >
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-group">
+                        <label for="nom">
+                            Nom
+                        </label>
+
+                        <input
+                            class="form-input"
+                            type="text"
+                            id="nom"
+                            name="nom"
+                            value="{{ old('nom', auth()->user()->nom) }}"
+                            required
+                        >
+
+                        @error('nom')
+                        <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            Adresse e-mail
+                        </label>
+
+                        <input
+                            class="form-input"
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ old('email', auth()->user()->email) }}"
+                            required
+                        >
+
+                        @error('email')
+                        <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button class="primary-button" type="submit">
+                        Enregistrer mes informations
+                    </button>
+
+                </form>
+            </details>
+
+            <details
+                class="account-details"
+                @if($errors->has('current_password') || $errors->has('password')) open @endif
+            >
+                <summary class="account-summary">
+                    Modifier mon mot de passe
+                </summary>
+
+                <form
+                    class="account-form"
+                    action="{{ route('compte.mot-de-passe.update') }}"
+                    method="POST"
+                >
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-group">
+                        <label for="current_password">
+                            Mot de passe actuel
+                        </label>
+
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="current_password"
+                            name="current_password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        @error('current_password')
+                        <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">
+                            Nouveau mot de passe
+                        </label>
+
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        @error('password')
+                        <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password_confirmation">
+                            Confirmer le nouveau mot de passe
+                        </label>
+
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            autocomplete="new-password"
+                            required
+                        >
+                    </div>
+
+                    <button class="primary-button" type="submit">
+                        Modifier mon mot de passe
+                    </button>
+
+                </form>
+            </details>
+
+        </section>
+
         <h3>Mes véhicules</h3>
 
         <div class="vehicle-grid">

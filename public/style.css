@@ -428,3 +428,51 @@ body {
     color: var(--blanc);
     background-color: var(--bleu-gris);
 }
+
+/* Message de confirmation */
+.success-message {
+    margin-bottom: 1.5rem;
+    padding: 0.8rem;
+    color: var(--vert-fonce);
+    text-align: center;
+    background-color: #F2F8F7;
+    border: 1px solid var(--vert);
+    border-radius: 5px;
+}
+
+/* Paramètres du compte */
+.account-settings {
+    margin-bottom: 2rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.account-details {
+    background-color: var(--blanc);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(28, 51, 52, 0.15);
+}
+
+.account-summary {
+    padding: 1rem;
+    color: var(--bleu-gris);
+    font-weight: bold;
+    cursor: pointer;
+    list-style: none;
+}
+
+.account-summary::-webkit-details-marker {
+    display: none;
+}
+
+.account-form {
+    padding: 0 1rem 1rem;
+    display: grid;
+    gap: 1rem;
+}
+
+@media screen and (min-width: 768px) {
+    .account-settings {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
