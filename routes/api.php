@@ -29,5 +29,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Retourne un véhicule selon son identifiant avec son type de carburant.
     Route::get('/vehicules/{id}', [VehiculeController::class, 'show']);
 
-    Route::get('/stations/distances', [StationController::class, 'getWithDistances']);
+    Route::get('/stations/recommandation', [StationController::class, 'getBestStations']);
 });
