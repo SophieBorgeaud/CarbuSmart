@@ -476,3 +476,96 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* Mise en page côte à côte pour la carte et le panneau latéral */
+.map-layout {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    gap: 1.25rem;
+}
+
+.map-sidebar {
+    width: 100%;
+    padding: 1.5rem;
+    background-color: var(--blanc);
+    border: 1px solid #dce5e4;
+    border-top: 5px solid var(--rose);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(28, 51, 52, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.map-sidebar-title {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    color: var(--bleu-gris);
+    font-size: 1.35rem;
+    border-bottom: 1px solid #dce5e4;
+}
+
+.map-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.map-action-button {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font: inherit;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.map-status-message {
+    margin: 0;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--bleu-gris);
+    background-color: var(--fond-clair);
+    border: 1px solid #dce5e4;
+    border-radius: 6px;
+}
+
+.recommendation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recommendation-card {
+    cursor: pointer;
+}
+
+.recommendation-card p {
+    margin: 0.35rem 0;
+    font-size: 0.92rem;
+}
+
+.recommendation-cost {
+    margin-top: 0.65rem !important;
+    padding-top: 0.55rem;
+    border-top: 1px solid #dce5e4;
+    color: var(--vert-fonce);
+}
+
+@media screen and (min-width: 768px) {
+    .map-layout {
+        flex-direction: row;
+        align-items: stretch;
+        min-height: calc(100vh - 170px);
+    }
+
+    .map-sidebar {
+        width: 390px;
+        min-width: 350px;
+        max-height: calc(100vh - 170px);
+        overflow-y: auto;
+    }
+}
