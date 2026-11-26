@@ -23,57 +23,58 @@ class StationController extends Controller
     }
 
     /**
-     * Point d'entrée de l'API : renvoie les 3 meilleures stations (coût plein + trajet).
+     * Récupérer meilleures stations
      */
     public function getBestStations(Request $request): JsonResponse
     {
-        $userLat = $request->input('lat');
-        $userLng = $request->input('lng');
-        $vehiculeId = $request->input('vehicule_id');
+        $validated = $request->validate([
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+            'vehicule_id' => 'required|integer',
+            'quantite_litres' => 'sometimes|numeric|min:1|max:200',
+        ], [
+            'lat.required' => 'La latitude (lat) est obligatoire pour calculer la recommandation.',
+            'lat.numeric' => 'La latitude doit être un nombre valide.',
+            'lng.required' => 'La longitude (lng) est obligatoire pour calculer la recommandation.',
+            'lng.numeric' => 'La longitude doit être un nombre valide.',
+            'vehicule_id.required' => 'Veuillez sélectionner un véhicule (vehicule_id) pour calculer la recommandation.',
+            'vehicule_id.integer' => 'L\'identifiant du véhicule doit être un nombre entier.',
+        ]);
 
-        // Validation de la quantité de carburant (40L par défaut)
-        $quantiteInput = $request->input('quantite_litres', self::DEFAULT_FUEL_LITERS);
-        $fuelLiters = (is_numeric($quantiteInput) && (float) $quantiteInput > 0)
-            ? (float) $quantiteInput
+        $userLat = (float) $validated['lat'];
+        $userLng = (float) $validated['lng'];
+        $vehiculeId = (int) $validated['vehicule_id'];
+        $fuelLiters = isset($validated['quantite_litres'])
+            ? (float) $validated['quantite_litres']
             : self::DEFAULT_FUEL_LITERS;
 
         // Récupération et vérification des droits sur le véhicule
-        $vehicule = null;
-        if (! empty($vehiculeId)) {
-            $vehicule = Vehicule::with('typeCarburant')->find($vehiculeId);
+        $vehicule = Vehicule::with('typeCarburant')
+            ->where('est_actif', true)
+            ->find($vehiculeId);
 
-            if (! $vehicule) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Véhicule introuvable.',
-                ], 404);
-            }
+        if (! $vehicule) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Véhicule introuvable.',
+            ], 404);
+        }
 
-            if ($request->user() !== null && (int) $vehicule->utilisateur_id !== (int) $request->user()->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Ce véhicule ne vous appartient pas.',
-                ], 403);
-            }
+        if ($request->user() !== null && (int) $vehicule->utilisateur_id !== (int) $request->user()->id) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ce véhicule ne vous appartient pas.',
+            ], 403);
         }
 
         // Récupération des stations depuis Strapi
         $stations = $this->stationService->getStations();
 
-        // Si pas de GPS fourni, on renvoie toutes les stations sans calcul
-        if (! is_numeric($userLat) || ! is_numeric($userLng)) {
-            return response()->json([
-                'status' => 'info',
-                'message' => 'Position inconnue. Fournissez des coordonnées pour calculer la distance.',
-                'data' => $stations,
-            ]);
-        }
-
         // Recherche du Top 3 des stations (distance + coût)
         $topStations = $this->findTopStations(
             $stations,
-            (float) $userLat,
-            (float) $userLng,
+            $userLat,
+            $userLng,
             $vehicule,
             $fuelLiters
         );
@@ -92,13 +93,13 @@ class StationController extends Controller
         // Retour de la réponse JSON
         return response()->json([
             'status' => 'success',
-            'vehicule' => $vehicule ? [
+            'vehicule' => [
                 'id' => $vehicule->id,
                 'nom_vehicule' => $vehicule->nom_vehicule,
                 'conso_moyenne' => (float) $vehicule->conso_moyenne,
                 'carburant' => $vehicule->typeCarburant?->code,
-            ] : null,
-            'quantite_litres' => $vehicule ? $fuelLiters : null,
+            ],
+            'quantite_litres' => $fuelLiters,
             'best_station' => $bestStation,
             'data' => $topStations,
         ]);
@@ -111,7 +112,7 @@ class StationController extends Controller
         array $stations,
         float $userLat,
         float $userLng,
-        ?Vehicule $vehicule,
+        Vehicule $vehicule,
         float $fuelLiters
     ): array {
         // Garder uniquement les stations dans un carré de 30 km
