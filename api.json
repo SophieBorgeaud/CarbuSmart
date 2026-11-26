@@ -1,0 +1,1049 @@
+{
+    "openapi": "3.1.2",
+    "info": {
+        "title": "Laravel",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "operationId": "auth.register",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "maxLength": 255
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "minLength": 8
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "minLength": 8
+                                    }
+                                },
+                                "required": [
+                                    "nom",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Utilisateur cr\u00e9\u00e9 avec succ\u00e8s."
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "operationId": "auth.login",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "email",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Connexion r\u00e9ussie."
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "const": "Bearer"
+                                        },
+                                        "user": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "token",
+                                        "token_type",
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Identifiants incorrects."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "operationId": "auth.me",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "required": [
+                                        "user"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "operationId": "auth.logout",
+                "tags": [
+                    "Auth"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "D\u00e9connexion r\u00e9ussie."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/stations/recommandation": {
+            "get": {
+                "operationId": "station.getBestStations",
+                "tags": [
+                    "Station"
+                ],
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lng",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "vehicule_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "quantite_litres",
+                        "in": "query",
+                        "description": "Validation de la quantit\u00e9 de carburant (40L par d\u00e9faut)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "const": "success"
+                                                },
+                                                "vehicule": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "nom_vehicule": {
+                                                            "type": "string"
+                                                        },
+                                                        "conso_moyenne": {
+                                                            "type": "number"
+                                                        },
+                                                        "carburant": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "nom_vehicule",
+                                                        "conso_moyenne",
+                                                        "carburant"
+                                                    ]
+                                                },
+                                                "quantite_litres": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "best_station": {
+                                                    "type": "string"
+                                                },
+                                                "data": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "vehicule",
+                                                "quantite_litres",
+                                                "best_station",
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "const": "info"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "const": "Position inconnue. Fournissez des coordonn\u00e9es pour calculer la distance."
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {}
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "message",
+                                                "data"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "const": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Ce v\u00e9hicule ne vous appartient pas."
+                                        }
+                                    },
+                                    "required": [
+                                        "status",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "const": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "const": "V\u00e9hicule introuvable."
+                                        }
+                                    },
+                                    "required": [
+                                        "status",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/types-carburants": {
+            "get": {
+                "operationId": "typeCarburant.index",
+                "summary": "Display a listing of the resource",
+                "tags": [
+                    "TypeCarburant"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/TypeCarburant"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/types-carburants/{id}": {
+            "get": {
+                "operationId": "typeCarburant.show",
+                "summary": "Display the specified resource",
+                "tags": [
+                    "TypeCarburant"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TypeCarburant`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TypeCarburant"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/vehicules": {
+            "get": {
+                "operationId": "vehicule.index",
+                "summary": "Display a listing of the resource",
+                "tags": [
+                    "Vehicule"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Vehicule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "vehicule.store",
+                "summary": "Store a newly created resource in storage",
+                "tags": [
+                    "Vehicule"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "type_carburant_id": {
+                                        "type": "integer"
+                                    },
+                                    "nom_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "conso_moyenne": {
+                                        "type": "number",
+                                        "minimum": 0.1,
+                                        "maximum": 100
+                                    },
+                                    "marque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "modele": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "type_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "num_plaque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "est_defaut": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "type_carburant_id",
+                                    "nom_vehicule",
+                                    "conso_moyenne",
+                                    "marque",
+                                    "modele",
+                                    "type_vehicule",
+                                    "num_plaque"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "V\u00e9hicule cr\u00e9\u00e9 avec succ\u00e8s."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Vehicule"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/vehicules/{id}": {
+            "get": {
+                "operationId": "vehicule.show",
+                "summary": "Display the specified resource",
+                "tags": [
+                    "Vehicule"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "vehicule.update_9",
+                "summary": "Update the specified resource in storage",
+                "tags": [
+                    "Vehicule"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "type_carburant_id": {
+                                        "type": "integer"
+                                    },
+                                    "nom_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "conso_moyenne": {
+                                        "type": "number",
+                                        "minimum": 0.1,
+                                        "maximum": 100
+                                    },
+                                    "marque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "modele": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "type_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "num_plaque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "est_defaut": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "V\u00e9hicule modifi\u00e9 avec succ\u00e8s."
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "description": "Retourne le v\u00e9hicule au format JSON."
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "vehicule.update_10",
+                "summary": "Update the specified resource in storage",
+                "tags": [
+                    "Vehicule"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "type_carburant_id": {
+                                        "type": "integer"
+                                    },
+                                    "nom_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "conso_moyenne": {
+                                        "type": "number",
+                                        "minimum": 0.1,
+                                        "maximum": 100
+                                    },
+                                    "marque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "modele": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "type_vehicule": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "num_plaque": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "est_defaut": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "V\u00e9hicule modifi\u00e9 avec succ\u00e8s."
+                                        },
+                                        "data": {
+                                            "type": "string",
+                                            "description": "Retourne le v\u00e9hicule au format JSON."
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "vehicule.destroy",
+                "summary": "Remove the specified resource from storage",
+                "tags": [
+                    "Vehicule"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "V\u00e9hicule supprim\u00e9 avec succ\u00e8s."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TypeCarburant": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nom",
+                    "code",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "TypeCarburant"
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "nom",
+                    "email",
+                    "email_verified_at",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "User"
+            },
+            "Vehicule": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "utilisateur_id": {
+                        "type": "integer"
+                    },
+                    "type_carburant_id": {
+                        "type": "integer"
+                    },
+                    "nom_vehicule": {
+                        "type": "string"
+                    },
+                    "conso_moyenne": {
+                        "type": "string"
+                    },
+                    "marque": {
+                        "type": "string"
+                    },
+                    "modele": {
+                        "type": "string"
+                    },
+                    "type_vehicule": {
+                        "type": "string"
+                    },
+                    "num_plaque": {
+                        "type": "string"
+                    },
+                    "est_defaut": {
+                        "type": "boolean"
+                    },
+                    "est_actif": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "utilisateur_id",
+                    "type_carburant_id",
+                    "nom_vehicule",
+                    "conso_moyenne",
+                    "marque",
+                    "modele",
+                    "type_vehicule",
+                    "num_plaque",
+                    "est_defaut",
+                    "est_actif",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "Vehicule"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

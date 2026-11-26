@@ -486,6 +486,45 @@ body {
     gap: 1.25rem;
 }
 
+.map-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    gap: 0.75rem;
+}
+
+.map-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--blanc);
+    border: 1px solid #dce5e4;
+    border-left: 5px solid var(--vert);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(28, 51, 52, 0.1);
+}
+
+.map-filter-bar label {
+    font-weight: bold;
+    color: var(--bleu-gris);
+}
+
+.map-filter-select {
+    width: auto;
+    min-width: 220px;
+    padding: 0.5rem 0.75rem;
+}
+
+.map-filter-count {
+    margin-left: auto;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--vert);
+}
+
 .map-sidebar {
     width: 100%;
     padding: 1.5rem;

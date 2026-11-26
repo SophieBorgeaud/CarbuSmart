@@ -78,7 +78,7 @@
 
                 <div class="form-group">
                     <label for="quantite-litres">
-                        Quantité d'essence (L)
+                        Quantité de carburant (L)
                     </label>
 
                     <input
@@ -119,7 +119,17 @@
             </aside>
         @endauth
 
-        <div id="map"></div>
+        <div class="map-container">
+            <div class="map-filter-bar">
+                <label for="fuel-filter-select">Filtrer par carburant :</label>
+                <select id="fuel-filter-select" class="form-input map-filter-select">
+                    <option value="">Tous les carburants</option>
+                </select>
+                <span id="fuel-filter-count" class="map-filter-count"></span>
+            </div>
+
+            <div id="map"></div>
+        </div>
     </div>
 
 @endsection
@@ -153,6 +163,12 @@
         const calculateBtn = document.getElementById('calculate-recommendation-btn');
         const statusMessage = document.getElementById('map-status-message');
         const recommendationList = document.getElementById('recommendation-list');
+        const fuelFilterSelect = document.getElementById('fuel-filter-select');
+        const fuelFilterCount = document.getElementById('fuel-filter-count');
+
+        // Stocke les stations initiales pour le filtre global
+        const initialStations = {{ Illuminate\Support\Js::from($stations ?? []) }};
+        let currentStations = initialStations;
 
         // Icône rouge pour l'utilisateur
         const userIcon = L.icon({
@@ -357,29 +373,46 @@
 
         // Appel à l'API et affichage des stations
         async function fetchStationsFromApi(lat = null, lng = null) {
-            let url = '/api/stations/recommandation';
-            if (lat !== null && lng !== null) {
-                url += `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
+            if (lat === null || lng === null) {
+                return;
+            }
 
-                if (vehiculeSelect && vehiculeSelect.value) {
-                    url += `&vehicule_id=${encodeURIComponent(vehiculeSelect.value)}`;
+            if (!vehiculeSelect || !vehiculeSelect.value) {
+                if (statusMessage) {
+                    statusMessage.textContent = 'Veuillez d’abord ajouter ou sélectionner un véhicule dans votre compte pour calculer la recommandation.';
                 }
+                return;
+            }
 
-                if (quantiteLitresInput && quantiteLitresInput.value) {
-                    url += `&quantite_litres=${encodeURIComponent(quantiteLitresInput.value)}`;
-                }
+            let url = `/api/stations/recommandation?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&vehicule_id=${encodeURIComponent(vehiculeSelect.value)}`;
+
+            if (quantiteLitresInput && quantiteLitresInput.value) {
+                url += `&quantite_litres=${encodeURIComponent(quantiteLitresInput.value)}`;
             }
 
             try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Erreur HTTP ${response.status}`);
-                }
-
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 const result = await response.json();
 
-                if (result.status === 'success' || result.status === 'info') {
+                if (!response.ok) {
+                    if (statusMessage) {
+                        statusMessage.textContent = result.message || `Erreur HTTP ${response.status}`;
+                    }
+                    return;
+                }
+
+                if (result.status === 'success') {
                     displayStationsOnMap(result.data);
+                    // Lorsqu'une recommandation est calculée, on réinitialise le filtre carburant pour afficher le Top 3
+                    if (fuelFilterSelect) {
+                        fuelFilterSelect.value = '';
+                    }
+                    currentStations = result.data;
+                    displayStationsOnMap(currentStations);
                     displayRecommendedStations(result);
                 }
             } catch (error) {
@@ -526,16 +559,67 @@
                     marker.openPopup();
                 }
             });
+
+            if (fuelFilterCount) {
+                fuelFilterCount.textContent = `${stationMarkers.filter(Boolean).length} station(s) affichée(s)`;
+            }
+        }
+
+        // Remplit la liste déroulante des types de carburants depuis l'API /api/types-carburants
+        async function fetchTypesCarburantsForFilter() {
+            if (!fuelFilterSelect) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/types-carburants', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (!response.ok) {
+                    return;
+                }
+
+                const types = await response.json();
+                if (!Array.isArray(types)) {
+                    return;
+                }
+
+                types.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type.code;
+                    option.textContent = `${type.nom} (${type.code})`;
+                    fuelFilterSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Erreur lors du chargement des types de carburants :", error);
+            }
+        }
+
+        // Filtre la carte globale selon le carburant sélectionné
+        if (fuelFilterSelect) {
+            fuelFilterSelect.addEventListener('change', function () {
+                const selectedCode = fuelFilterSelect.value.trim().toLowerCase();
+
+                if (!selectedCode) {
+                    displayStationsOnMap(initialStations);
+                    return;
+                }
+
+                const filteredStations = initialStations.filter(station => {
+                    const fuels = station.fuels || station.carburants || [];
+                    return Array.isArray(fuels) && fuels.some(fuel => {
+                        const code = (fuel.fuelCode || fuel.code || '').toString().toLowerCase();
+                        return code === selectedCode;
+                    });
+                });
+
+                displayStationsOnMap(filteredStations);
+            });
         }
 
         // Initialisation au chargement de la page :
-        // Utilise les stations déjà passées par la route /map pour éviter un double appel API
-        const initialStations = {{ Illuminate\Support\Js::from($stations ?? []) }};
-        if (initialStations.length > 0) {
-            displayStationsOnMap(initialStations);
-        } else {
-            fetchStationsFromApi();
-        }
+        fetchTypesCarburantsForFilter();
+        displayStationsOnMap(initialStations);
     </script>
 
 @endsection
